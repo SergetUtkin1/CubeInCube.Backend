@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CubeInCube.Backend.Domain\CubeInCube.Backend.Domain.csproj" />
+    <ProjectReference Include="..\CubeInCube.Backend.Services.Abstractions\CubeInCube.Backend.Services.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
