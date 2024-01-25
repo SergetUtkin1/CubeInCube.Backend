@@ -7,12 +7,14 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
     public class Case
     {
         private Shape[] _shapes;
+        private List<Shape> _goodShapes;
         private CaseConfiguration Configuration { get; set; }
         private CaseFactory Factory { get; set; }
         private FileWriter FileWriter { get; set; }
 
         public Case(CaseFactory factory, CaseConfiguration configuration, FileWriter fileWriter)
         {
+            _goodShapes = new List<Shape>();
             Configuration = configuration;
             Factory = factory;
             FileWriter = fileWriter;
@@ -21,7 +23,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
             _shapes = FillArrayOfInnerShapes(Configuration.IsSortingEnable);
         }
 
-        public void Run()
+        public List<Shape> Run()
         {
             var curCount = 0;
             var attemptCount = 0;
@@ -45,12 +47,15 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
                     curCount += 1;
                     shapeIndex += 1;
                     attemptCount = 0;
+                    _goodShapes.Add(_shapes[shapeIndex]);
                     FileWriter.Write(center, _shapes[shapeIndex].Dimension);
                     Console.WriteLine($"N-{curCount}: ({center.X}, {center.Y}, {center.Z}) H:{_shapes[shapeIndex].Dimension.Heigth} W:{_shapes[shapeIndex].Dimension.Width}  L:{_shapes[shapeIndex].Dimension.Length} ");
                 }
             }
             FileWriter.Count += 1;
             Console.WriteLine($"Удалось вместить: {curCount}. \nПройдено фигур: {shapeIndex}");
+
+            return _goodShapes;
         }
 
         private Shape[] FillArrayOfInnerShapes(bool isSortingEnable)

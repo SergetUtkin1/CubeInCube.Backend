@@ -9,6 +9,6 @@ namespace CubeInCube.Backend.Contracts
     public class CaseDto
     {
         public int Count { get; set; }
-        public List<ShapeLookUpDto>? Shapes { get; set; }
+        public List<ShapeLookUpDto> Shapes { get; set; } = new List<ShapeLookUpDto>();
     }
 }
