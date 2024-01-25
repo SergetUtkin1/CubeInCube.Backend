@@ -4,7 +4,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.AbstractPr
 {
     public abstract class Shape
     {
-        public Position Center { get; set; }
+        public Position Center { get; set;   }
         public Dimension Dimension { get; set; }
         public double Volume { get; set; }
 

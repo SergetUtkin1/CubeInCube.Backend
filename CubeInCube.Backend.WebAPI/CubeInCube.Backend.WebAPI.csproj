@@ -18,4 +18,8 @@
     <ProjectReference Include="..\CubeInCube.Backend.Services\CubeInCube.Backend.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

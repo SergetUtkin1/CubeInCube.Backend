@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CubeInCube.Backend.Contracts\CubeInCube.Backend.Contracts.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Services
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Services", "CubeInCube.Backend.Services\CubeInCube.Backend.Services.csproj", "{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Contracts", "CubeInCube.Backend.Contracts\CubeInCube.Backend.Contracts.csproj", "{789ED4A8-C95F-4AB2-9747-037715D3A6F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{789ED4A8-C95F-4AB2-9747-037715D3A6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789ED4A8-C95F-4AB2-9747-037715D3A6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789ED4A8-C95F-4AB2-9747-037715D3A6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789ED4A8-C95F-4AB2-9747-037715D3A6F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{3BDD8BD1-0D4C-440B-ABF3-EED503A78403} = {2C5ADB42-46EE-4E3E-A8E5-CC2F0E100EC9}
 		{C9C6A101-D31B-4356-A823-AF0F0CAAC3DE} = {2C5ADB42-46EE-4E3E-A8E5-CC2F0E100EC9}
 		{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D} = {2C5ADB42-46EE-4E3E-A8E5-CC2F0E100EC9}
+		{789ED4A8-C95F-4AB2-9747-037715D3A6F6} = {2C5ADB42-46EE-4E3E-A8E5-CC2F0E100EC9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {500AD7E9-7A7C-49DF-B5F7-23E0F31E2679}
