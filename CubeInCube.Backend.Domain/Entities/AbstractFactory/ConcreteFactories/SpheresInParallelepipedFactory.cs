@@ -95,7 +95,7 @@ namespace ShapesInShape.Models.AbstractFactory.ConcreteFactories
 
             for (int i = 0; i < BoundingShape.Sides.Length; i++)
             {
-                var distance = BoundingShape.Center.GetDistance(BoundingShape.Sides[i]);
+                var distance = shape.Center.GetDistance(BoundingShape.Sides[i]);
 
                 if (distance <= shape.Dimension.Length)
                 {

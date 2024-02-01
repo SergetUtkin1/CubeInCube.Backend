@@ -12,24 +12,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ShapesInShape.Models.AbstractFactory.ConcreteFactories;
+using CubeInCube.Backend.Domain.Entities.AbstractFactory.ConcreteFactories;
+using CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.AbstractProducts;
+using ShapesInShape.Models.AbstractFactory.Products.Distributions;
 
 namespace CubeInCube.Backend.Services
 {
     public class CaseService : ICaseService
     {
-        public async Task<CaseDto> CreateCase(CaseForCreationDto caseForCreationDto)
+        public CaseDto CreateCase(CaseForCreationDto caseForCreationDto)
         {
-            var factory = new SpheresInParallelepipedFactory();
+            CaseFactory factory = new SphereInSphereFactory();
+
+            if (caseForCreationDto.InnerShape == "Sphere" && caseForCreationDto.BoundingShape == "Sphere")
+                factory = new SphereInSphereFactory();
+
+            if (caseForCreationDto.InnerShape == "Sphere" && caseForCreationDto.BoundingShape == "Parallelepiped")
+                factory = new SpheresInParallelepipedFactory();
+
             var fileWriter = new FileWriter();
             var configuration = new CaseConfiguration()
             {
                 Count = caseForCreationDto.Count,
-                BoundDimension = new Dimension(caseForCreationDto.BoundingShapeDimension.Length, caseForCreationDto.BoundingShapeDimension.Width, caseForCreationDto.BoundingShapeDimension.Heigth),
+                BoundDimension = new Dimension(caseForCreationDto.BoundingShapeDimension.Length, caseForCreationDto.BoundingShapeDimension.Width, caseForCreationDto.BoundingShapeDimension.Height),
                 MaxLength = caseForCreationDto.MaxInnerShapeDimension.Length,
                 MinLength = caseForCreationDto.MinInnerShapeDimension.Length,
                 IsSortingEnable = caseForCreationDto.IsSortingEnable,
-                DistributionOfLength = new UniformDistribution(),
-                DistributionOfPosition = new UniformDistribution()
+                DistributionOfLength = GetDistributionByName(caseForCreationDto.DistributionOfLength),
+                DistributionOfPosition = GetDistributionByName(caseForCreationDto.DistributionOfPosition)
             };
 
             var myCase = new Case(factory, configuration, fileWriter);
@@ -54,6 +64,24 @@ namespace CubeInCube.Backend.Services
             }
 
             return caseDto;
+        }
+
+        private Distribution GetDistributionByName(string name)
+        {
+            if(name == "Uniform")
+            {
+                return new UniformDistribution();
+            }
+            if(name == "Gamma")
+            {
+                return new GammaDistribution();
+            }
+            if(name == "Gaussian")
+            {
+                return new GaussianDistribution();
+            }
+
+            return new UniformDistribution();
         }
     }
 }

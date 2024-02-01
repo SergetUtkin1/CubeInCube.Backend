@@ -10,6 +10,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.Shapes
 
         public Parallelepiped(Position center, double length, double width, double heigth) : base(center, length, width, heigth)
         {
+            Center = center;
             Sides = new Plane[6];
             Points = new Position[8];
             SetSides();
@@ -17,6 +18,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.Shapes
 
         public Parallelepiped(Position center, double length) : base(center, length)
         {
+            Center = center;
             Sides = new Plane[6];
             Points = new Position[8];
             SetSides();

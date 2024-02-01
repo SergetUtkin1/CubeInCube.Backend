@@ -7,6 +7,7 @@ namespace CubeInCube.Backend.Domain.Entities.Models.AbstractFactory.Products.Sha
     {
         public Cylinder(Position center, double length, double width, double heigth, double theta, double fi) : base(center, length, width, heigth, theta, fi)
         {
+            Center = center;
             Dimension = new Dimension()
             {
                 Heigth = heigth,

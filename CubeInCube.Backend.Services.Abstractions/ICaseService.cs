@@ -9,6 +9,6 @@ namespace CubeInCube.Backend.Services.Abstractions
 {
     public interface ICaseService
     {
-        Task<CaseDto> CreateCase(CaseForCreationDto caseForCreationDto);
+        CaseDto CreateCase(CaseForCreationDto caseForCreationDto);
     }
 }

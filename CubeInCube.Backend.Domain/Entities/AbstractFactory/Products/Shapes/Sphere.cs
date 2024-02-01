@@ -7,12 +7,14 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.Shapes
     {
         public Sphere(Position center, double length, double width, double heigth) : base(center, length, width, heigth)
         {
+            Center = center;
             Dimension = new Dimension(length);
         }
 
         public Sphere(Position center, double length) : base(center, length)
         {
-
+            Center = center;
+            Dimension = new Dimension(length);
         }
 
         protected override double GetVolume()

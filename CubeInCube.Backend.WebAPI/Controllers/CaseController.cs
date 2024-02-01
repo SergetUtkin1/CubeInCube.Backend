@@ -17,7 +17,7 @@ namespace CubeInCube.Backend.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CaseDto>> CreateCase(CaseForCreationDto caseForCreationDto)
+        public ActionResult<CaseDto> CreateCase(CaseForCreationDto caseForCreationDto)
         {
             var result = _serviceManager.CaseService.CreateCase(caseForCreationDto);
 

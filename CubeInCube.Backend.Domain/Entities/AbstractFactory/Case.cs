@@ -36,6 +36,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
 
                 var center = Factory.CreatePoint(Configuration.DistributionOfPosition); 
                 Factory.CreateInnerShape(center, _shapes[shapeIndex].Dimension);
+                _shapes[shapeIndex].Center = center;
 
                 if (Factory.CheckIntersection())
                 {
@@ -45,11 +46,11 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
                 {
                     Factory.ConfirmAdding();
                     curCount += 1;
-                    shapeIndex += 1;
                     attemptCount = 0;
                     _goodShapes.Add(_shapes[shapeIndex]);
                     FileWriter.Write(center, _shapes[shapeIndex].Dimension);
                     Console.WriteLine($"N-{curCount}: ({center.X}, {center.Y}, {center.Z}) H:{_shapes[shapeIndex].Dimension.Heigth} W:{_shapes[shapeIndex].Dimension.Width}  L:{_shapes[shapeIndex].Dimension.Length} ");
+                    shapeIndex += 1;
                 }
             }
             FileWriter.Count += 1;

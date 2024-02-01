@@ -15,6 +15,13 @@ namespace CubeInCube.Backend.WebAPI
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin",
+                    builder => builder.WithOrigins("http://localhost:1234") // Add your client's origin here
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -33,7 +40,7 @@ namespace CubeInCube.Backend.WebAPI
 
             app.UseAuthorization();
 
-
+            app.UseCors("AllowOrigin");
             app.MapControllers();
 
             app.Run();
