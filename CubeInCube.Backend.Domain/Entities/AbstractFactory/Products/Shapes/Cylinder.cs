@@ -20,7 +20,7 @@ namespace CubeInCube.Backend.Domain.Entities.Models.AbstractFactory.Products.Sha
 
         protected override double GetVolume()
         {
-            double volume = Dimension.Length * double.Pi * Math.Pow(Dimension.Length, 2);
+            double volume = Dimension.Length * double.Pi * Math.Pow(Dimension.Width, 2);
             return volume;
         }
     

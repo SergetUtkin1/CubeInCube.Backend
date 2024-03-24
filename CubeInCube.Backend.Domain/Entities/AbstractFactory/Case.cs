@@ -71,8 +71,8 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
                     Length = CreateLength(),
                     Width = CreateLength(),
                     Heigth = CreateLength(),
-                    Theta = CreateLength(),
-                    Fi = CreateLength(),
+                    Theta = CreateRotation(),
+                    Fi = CreateRotation(),
                 };
                 dimensions[i] = dimension;
             }
@@ -94,6 +94,19 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
             return length;
         }
            
+        private double CreateRotation()
+        {
+            double rotation;
+            var maxValue = 2.0 * Math.PI;
+            var minValue = 0.0;
 
+            do
+            {
+                rotation = Configuration.DistributionOfLength
+                        .GetValue(minValue, maxValue);
+            } while (!(minValue <= rotation && rotation <= maxValue)); ;
+
+            return rotation;
+        }
     }
 }

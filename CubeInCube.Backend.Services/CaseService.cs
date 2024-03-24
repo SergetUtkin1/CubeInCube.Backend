@@ -30,6 +30,9 @@ namespace CubeInCube.Backend.Services
             if (caseForCreationDto.InnerShape == "Sphere" && caseForCreationDto.BoundingShape == "Parallelepiped")
                 factory = new SpheresInParallelepipedFactory();
 
+            if (caseForCreationDto.InnerShape == "Cylinder" && caseForCreationDto.BoundingShape == "Parallelepiped")
+                factory = new CylinderInParallelepipedFactory();
+
             var fileWriter = new FileWriter();
             var configuration = new CaseConfiguration()
             {
