@@ -28,7 +28,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.ConcreteFactories
             {
                 x = distributionOfPosition.GetValue(BoundingShape.Center.X - 0.5 * BoundingShape.Dimension.Length, BoundingShape.Center.X + 0.5 * BoundingShape.Dimension.Length);
                 y = distributionOfPosition.GetValue(BoundingShape.Center.Y - 0.5 * BoundingShape.Dimension.Width, BoundingShape.Center.Y + 0.5 * BoundingShape.Dimension.Width);
-                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Heigth, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Heigth);
+                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Height, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Height);
                 position = new Position(x, y, z);
             } while (!CheckPointInsideBounding(position));
 
@@ -44,7 +44,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.ConcreteFactories
                 spheres[i] = new Sphere(new Position(),
                                         dimensions[i].Length,
                                         dimensions[i].Width,
-                                        dimensions[i].Heigth);
+                                        dimensions[i].Height);
             }
             if (isSortingEnable)
                 Array.Sort(spheres, (a, b) => ((int)(b.Volume - a.Volume)));

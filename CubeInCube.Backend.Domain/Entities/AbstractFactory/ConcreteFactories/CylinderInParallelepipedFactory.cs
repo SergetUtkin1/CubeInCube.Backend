@@ -5,6 +5,10 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using CubeInCube.Backend.Domain.Entities.AbstractFactory;
 using CubeInCube.Backend.Domain.Entities.Models.AbstractFactory.Products.Shapes;
+using System.Drawing;
+using System.Reflection;
+using MathNet.Numerics.Distributions;
+using System.IO.Pipes;
 
 namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactories
 {
@@ -14,11 +18,11 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
         public Parallelepiped BoundingShape { get; set; } = null!;
 
         public override void CreateBoundingShape(Dimension dimension) =>
-            BoundingShape = new Parallelepiped(new Position(), dimension.Length, dimension.Width, dimension.Heigth);
+            BoundingShape = new Parallelepiped(new Position(), dimension.Length, dimension.Width, dimension.Height);
 
         public override void CreateInnerShape(Position center, Dimension dimension)
         {
-            var cylinder = new Cylinder(center, dimension.Length, dimension.Width, dimension.Heigth, dimension.Theta, dimension.Fi);
+            var cylinder = new Cylinder(center, dimension.Length, dimension.Width, dimension.Height, dimension.Theta, dimension.Fi);
             InnerShapes[_currentIndex] = cylinder;
         }
 
@@ -36,7 +40,7 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
                 cylinders[i] = new Cylinder(new Position(),
                                         dimensions[i].Length,
                                         dimensions[i].Width,
-                                        dimensions[i].Heigth,
+                                        dimensions[i].Height,
                                         dimensions[i].Theta,
                                         dimensions[i].Fi);
             }
@@ -56,7 +60,7 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
             {
                 x = distributionOfPosition.GetValue(BoundingShape.Center.X - 0.5 * BoundingShape.Dimension.Length, BoundingShape.Center.X + 0.5 * BoundingShape.Dimension.Length);
                 y = distributionOfPosition.GetValue(BoundingShape.Center.Y - 0.5 * BoundingShape.Dimension.Width, BoundingShape.Center.Y + 0.5 * BoundingShape.Dimension.Width);
-                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Heigth, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Heigth);
+                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Height, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Height);
                 position = new Position(x, y, z);
             } while (!CheckPointInsideBounding(position));
 
@@ -68,7 +72,7 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
             var flag = false;
             var xPlanes = (BoundingShape.Center.X - 0.5 * BoundingShape.Dimension.Length, BoundingShape.Center.X + 0.5 * BoundingShape.Dimension.Length);
             var yPlanes = (BoundingShape.Center.Y - 0.5 * BoundingShape.Dimension.Width, BoundingShape.Center.Y + 0.5 * BoundingShape.Dimension.Width);
-            var zPlanes = (BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Heigth, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Heigth);
+            var zPlanes = (BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Height, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Height);
 
             var xCondition = (xPlanes.Item1 < position.X && position.X < xPlanes.Item2);
             var yCondition = (yPlanes.Item1 < position.Y && position.Y < yPlanes.Item2);
@@ -84,11 +88,119 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
         protected override bool HasIntersectionWithOtherShape(Shape shape, Shape otherShape)
         {
             var flag = false;
-            var distanceBetweenCenteres = shape.Center.GetDistance(otherShape.Center);
+            var axisPoints1 = GetPointsOfAxis(shape);
+            Plane top1;
+            Plane bottom1;
+            (top1, bottom1) = GetPlanesOfCylinder(shape);
 
-            if (distanceBetweenCenteres <= shape.Dimension.Length + otherShape.Dimension.Length)
+            var axisPoints2 = GetPointsOfAxis(otherShape);
+            Plane top2;
+            Plane bottom2;
+            (top2, bottom2) = GetPlanesOfCylinder(otherShape);
+
+            var distances = new List<double>();
+
+            var intersectionPoints = FindIntersectionLine(top1, top2);
+            if (intersectionPoints != null)
+            {
+                distances.Add(top1.Points[0].GetDistance(top2.Points[0]));
+            }
+
+            intersectionPoints = FindIntersectionLine(top1, bottom2);
+            if (intersectionPoints != null)
+            {
+                distances.Add(top1.Points[0].GetDistance(bottom2.Points[0]));
+            }
+
+            intersectionPoints = FindIntersectionLine(bottom1, bottom2);
+            if (intersectionPoints != null)
+            {
+                distances.Add(bottom1.Points[0].GetDistance(bottom2.Points[0]));
+            }
+
+            if (distances.Any(d => (d <= shape.Dimension.Width + otherShape.Dimension.Width)))
             {
                 flag = true;
+                return flag;
+            }
+
+
+            foreach (var point in axisPoints1)
+            {
+                var distance = point.GetDistance(top2);
+
+                if (distance <= shape.Dimension.Length)
+                {
+                    var projectPoint = point.ProjectPointOntoPlane(top2);
+                    var distanceForTop = projectPoint.GetDistance(top1);
+                    var distanceForBottom = projectPoint.GetDistance(bottom1);
+                    if (distanceForTop <= shape.Dimension.Height && distanceForBottom <= shape.Dimension.Height)
+                    {
+                        flag = true;
+                        return flag;
+                    }
+                }
+
+                distance = point.GetDistance(bottom2);
+
+                if (distance <= shape.Dimension.Length)
+                {
+                    var projectPoint = point.ProjectPointOntoPlane(bottom2);
+                    var distanceForTop = projectPoint.GetDistance(top1);
+                    var distanceForBottom = projectPoint.GetDistance(bottom1);
+                    if (distanceForTop <= shape.Dimension.Height && distanceForBottom <= shape.Dimension.Height)
+                    {
+                        flag = true;
+                        return flag;
+                    }
+                }
+            }
+
+            foreach (var point in axisPoints2)
+            {
+                var distance = point.GetDistance(top1);
+
+                if (distance <= shape.Dimension.Length)
+                {
+                    var projectPoint = point.ProjectPointOntoPlane(top1);
+                    var distanceForTop = projectPoint.GetDistance(top2);
+                    var distanceForBottom = projectPoint.GetDistance(bottom2);
+                    if (distanceForTop <= shape.Dimension.Height && distanceForBottom <= shape.Dimension.Height)
+                    {
+                        flag = true;
+                        return flag;
+                    }
+                }
+
+                distance = point.GetDistance(bottom1);
+
+                if (distance <= shape.Dimension.Length)
+                {
+                    var projectPoint = point.ProjectPointOntoPlane(bottom1);
+                    var distanceForTop = projectPoint.GetDistance(top2);
+                    var distanceForBottom = projectPoint.GetDistance(bottom2);
+                    if (distanceForTop <= shape.Dimension.Height && distanceForBottom <= shape.Dimension.Height)
+                    {
+                        flag = true;
+                        return flag;
+                    }
+                }
+            }
+
+            for (int i = 0; i < axisPoints1.Count; i++)
+            {
+                for (int j = 0; j < axisPoints2.Count; j++)
+                {
+                    var distance = axisPoints1[i].GetDistance(axisPoints2[j]);
+
+                    if(distance <= shape.Dimension.Width + otherShape.Dimension.Width && 
+                     !(top1.IsOthersidePoints(axisPoints1[i], axisPoints2[j]) && top2.IsOthersidePoints(axisPoints1[i], axisPoints2[j]) &&
+                        bottom1.IsOthersidePoints(axisPoints1[i], axisPoints2[j]) && bottom2.IsOthersidePoints(axisPoints1[i], axisPoints2[j])))
+                    {
+                        flag = true;
+                        return flag;
+                    }
+                }
             }
 
             return flag;
@@ -98,45 +210,62 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
         {
             var flag = false;
 
-            for (int i = 0; i < BoundingShape.Sides.Length; i++)
-            {
-                var sides = BoundingShape.Sides;
-                var points = GetPointsOfAxis(shape);
-                Plane top;
-                Plane bottom;
-                (top, bottom) = GetPlanesOfCylinder(shape);
-                foreach (var side in sides)
-                {
-                    var intersectionPoints = FindIntersectionPoints(top, side) ?? FindIntersectionPoints(bottom, side);
-                    if(intersectionPoints != null)
-                    {
-                        var line = new Edge(intersectionPoints.Value.Item1, intersectionPoints.Value.Item2);
-                        var distanceFromTopCenter = top.Points[0].GetDistance(line);
-                        var distanceFromBottomCenter = bottom.Points[0].GetDistance(line);
+            var sides = BoundingShape.Sides;
+            var points = GetPointsOfAxis(shape);
+            Plane top;
+            Plane bottom;
+            (top, bottom) = GetPlanesOfCylinder(shape);
 
-                        if (distanceFromBottomCenter <= shape.Dimension.Width || distanceFromTopCenter <= shape.Dimension.Width)
+            foreach (var side in sides)
+            {
+                if (side.IsOthersidePoints(top.Points[0], bottom.Points[0]))
+                {
+                    Console.WriteLine($"Otherside Points");
+                    flag = true;
+                    return flag;
+                }
+                var planesAndLines = new Dictionary<Plane, Edge?>();
+
+                planesAndLines[top] = FindIntersectionLine(top, side);
+                planesAndLines[bottom] = FindIntersectionLine(bottom, side);
+                foreach (var item in planesAndLines)
+                {
+                    double distanceFromCenter = double.MaxValue;
+
+                    if (item.Value is not null)
+                    {
+                        distanceFromCenter = item.Key.Points[0].GetDistance(item.Value);
+                    }
+
+                    if (distanceFromCenter <= shape.Dimension.Width)
+                    {
+                        Console.WriteLine($"Top: {top.Points[0]} \nBottom:{bottom.Points[0]}\n Radius:{shape.Dimension.Width}");
+                        Console.WriteLine($"Intersection: Distance from center to line: {Math.Truncate(distanceFromCenter)}");
+                        flag = true;
+                        return flag;
+                    }
+                }
+
+
+                foreach (var point in points)
+                {
+                    var distance = point.GetDistance(side);
+
+                    if (distance <= shape.Dimension.Width)
+                    {
+                        var projectPoint = point.ProjectPointOntoPlane(side);
+                        var distanceForTop = projectPoint.GetDistance(top);
+                        var distanceForBottom = projectPoint.GetDistance(bottom);
+                        if (distanceForTop <= shape.Dimension.Height && distanceForBottom <= shape.Dimension.Height)
                         {
+                            Console.WriteLine($"Intersection: Distance from axis point: {Math.Truncate(distance)}\n" +
+                                $"Project point to side:{projectPoint}\n" +
+                                $"distanceForTop:{Math.Truncate(distanceForTop)}\n" +
+                                $"distanceForBottom:{Math.Truncate(distanceForBottom)}");
                             flag = true;
                             return flag;
                         }
-                    }
-                    
-                    foreach (var point in points)
-                    {
-                        var distance = point.GetDistance(BoundingShape.Sides[i]);
 
-                        if (distance <= shape.Dimension.Length)
-                        {
-                            var projectPoint = point.ProjectPointOntoPlane(side);
-                            var distanceForTop = projectPoint.GetDistance(top);
-                            var distanceForBottom = projectPoint.GetDistance(bottom);
-                            if (distanceForTop <= shape.Dimension.Heigth && distanceForBottom <= shape.Dimension.Heigth)
-                            {
-                                flag = true;
-                                return flag;
-                            }
-
-                        }
                     }
                 }
             }
@@ -144,7 +273,16 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
             return flag;
         }
 
-        static (Position, Position)? FindIntersectionPoints(Plane plane1, Plane plane2)
+        private double GetDistanceFromCenter(Plane plane, Edge? line)
+        {
+            if(line is null)
+            {
+                throw new ArgumentNullException(nameof(line));
+            }
+            return plane.Points[0].GetDistance(line);
+        }
+
+        static Edge? FindIntersectionLine(Plane plane1, Plane plane2)
         {
             // Проверка на параллельность или совпадение плоскостей
             if (plane1.Normal.X * plane2.Normal.Y == plane2.Normal.X * plane1.Normal.Y 
@@ -174,25 +312,26 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
             }
 
             // Возвращаем точки
-            return (intersectionPoints[0], intersectionPoints[1]);
+            return new Edge(intersectionPoints[0], intersectionPoints[1]);
         }
 
-        private static List<Position> GetPointsOfAxis(Shape shape)
+        private static List<Position> GetPointsOfAxis(Shape cylindr)
         {
-            var count = 1000.0;
-            var start = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z - shape.Dimension.Heigth * 0.5);
-            var end = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z + shape.Dimension.Heigth * 0.5);
-            var step = shape.Dimension.Heigth / count;
+            var count = 100.0;
+            var start = new Position(cylindr.Center.X, cylindr.Center.Y, cylindr.Center.Z - cylindr.Dimension.Height * 0.5);
+            var end = new Position(cylindr.Center.X, cylindr.Center.Y, cylindr.Center.Z + cylindr.Dimension.Height * 0.5);
+            var step = cylindr.Dimension.Height / count;
             var points = new List<Position>()
                     {
-                        RotateVector(start, shape.Dimension.Theta, shape.Dimension.Fi),
-                        RotateVector(end, shape.Dimension.Theta, shape.Dimension.Fi)
+                        RotateVector(start, cylindr.Dimension.Theta, cylindr.Dimension.Fi),
+                        RotateVector(end, cylindr.Dimension.Theta, cylindr.Dimension.Fi)
                     };
-
+            var z = start.Z;
             for (int j = 0; j < count; j++)
             {
-                var point = new Position(shape.Center.X, shape.Center.Y, start.Z + step);
-                points.Add(RotateVector(point, shape.Dimension.Theta, shape.Dimension.Fi));
+                z += step;
+                var point = new Position(cylindr.Center.X, cylindr.Center.Y, z);
+                points.Add(RotateVector(point, cylindr.Dimension.Theta, cylindr.Dimension.Fi));
             }
 
             return points;
@@ -200,8 +339,8 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
 
         private static (Plane top, Plane bottom) GetPlanesOfCylinder(Shape shape)
         {
-            var start = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z - shape.Dimension.Heigth * 0.5);
-            var end = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z + shape.Dimension.Heigth * 0.5);
+            var start = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z - shape.Dimension.Height * 0.5);
+            var end = new Position(shape.Center.X, shape.Center.Y, shape.Center.Z + shape.Dimension.Height * 0.5);
 
             var bottom = new Plane(RotateVector(start, shape.Dimension.Theta, shape.Dimension.Fi),
                RotateVector(new Position(start.X + shape.Dimension.Width, start.Y, start.Z), shape.Dimension.Theta, shape.Dimension.Fi),
@@ -244,7 +383,7 @@ namespace ShapesInShape.ConsoleApplication.Models.AbstractFactory.ConcreteFactor
             // Создание матрицы поворота по оси X
             var rotationMatrixX = Matrix<double>.Build.DenseOfArray(new double[,] {
             { 1, 0, 0 },
-            { 0, Math.Cos(angleX), -Math.Sin(angleX) },
+            { 0, Math.Cos(angleX), -Math.Sin(angleX) }, 
             { 0, Math.Sin(angleX), Math.Cos(angleX) }
             });
 

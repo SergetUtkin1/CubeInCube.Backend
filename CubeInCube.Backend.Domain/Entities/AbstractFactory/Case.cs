@@ -49,7 +49,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
                     attemptCount = 0;
                     _goodShapes.Add(_shapes[shapeIndex]);
                     FileWriter.Write(center, _shapes[shapeIndex].Dimension);
-                    Console.WriteLine($"N-{curCount}: ({center.X}, {center.Y}, {center.Z}) H:{_shapes[shapeIndex].Dimension.Heigth} W:{_shapes[shapeIndex].Dimension.Width}  L:{_shapes[shapeIndex].Dimension.Length} ");
+                    Console.WriteLine($"N-{curCount}: ({center.X}, {center.Y}, {center.Z}) H:{_shapes[shapeIndex].Dimension.Height} W:{_shapes[shapeIndex].Dimension.Width}  L:{_shapes[shapeIndex].Dimension.Length} ");
                     shapeIndex += 1;
                 }
             }
@@ -70,7 +70,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory
                 {
                     Length = CreateLength(),
                     Width = CreateLength(),
-                    Heigth = CreateLength(),
+                    Height = CreateLength(),
                     Theta = CreateRotation(),
                     Fi = CreateRotation(),
                 };

@@ -4,7 +4,7 @@
     {
         public double Length { get; set; }
         public double Width { get; set; }
-        public double Heigth { get; set; }
+        public double Height { get; set; }
         public double Theta { get; set; } = 0.0;
         public double Fi { get; set; } = 0.0;
 
@@ -17,7 +17,7 @@
         {
             Length = length;
             Width = width;
-            Heigth = heigth;
+            Height = heigth;
             Theta = theta;
             Fi = fi;
         }
@@ -26,7 +26,7 @@
         {
             Length = width;
             Width = width;
-            Heigth = heigth;
+            Height = heigth;
             Theta = theta;
             Fi = fi;
         }
@@ -35,14 +35,14 @@
         {
             Length = length;
             Width = width;
-            Heigth = heigth;
+            Height = heigth;
         }
 
         public Dimension(double length)
         {
             Length = length;
             Width = length;
-            Heigth = length;
+            Height = length;
         }
     }
 }

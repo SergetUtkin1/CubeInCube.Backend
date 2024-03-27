@@ -51,7 +51,7 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
             var vec2 = point3 - point1;
 
             // Вычисляем векторное произведение этих векторов
-            var normalVector = VectorCrossProduct(vec1, vec2);
+            var normalVector = VectorCrossProduct(vec1, vec2).Normalize(2);
             Normal = new Position(normalVector);
             Dvalue = -(Normal.X * position1.X + Normal.Y * position1.Y + Normal.Z * position1.Z);
         }
@@ -59,7 +59,7 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
         public Position? FindIntersectionDirectionVector(Vector<double> normal1, Vector<double> normal2)
         {
             // Найдем вектор, параллельный линии пересечения плоскостей
-            var direction = VectorCrossProduct(normal1, normal2);
+            var direction = VectorCrossProduct(normal1, normal2).Normalize(2); ;
 
             // Если вектор направления линии равен нулю, то плоскости параллельны или совпадают
             if (direction.L2Norm() < 1e-10)
@@ -88,6 +88,32 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
             result[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
             result[2] = vector1[0] * vector2[1] - vector1[1] * vector2[0];
             return result;
+        }
+
+        public bool IsOthersidePoints(Position point1, Position point2)
+        {
+            // Значения уравнения плоскости для двух точек
+            double value1 = Normal.X * point1.X + Normal.Y * point1.Y + Normal.Z * point1.Z + Dvalue;
+            double value2 = Normal.X * point2.X + Normal.Y * point2.Y + Normal.Z * point2.Z + Dvalue;
+
+            // Проверка расположения сторон плоскости относительно точек
+            if ((value1 > 0 && value2 < 0) || (value1 < 0 && value2 > 0))
+            {
+                return true;
+            }
+            else if (value1 == 0 && value2 == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{Math.Truncate(Normal.X)}x + ({Math.Truncate(Normal.Y)}y) + ({Normal.Z}z) + ({Math.Truncate(Dvalue)}) = 0";
         }
     }
 }

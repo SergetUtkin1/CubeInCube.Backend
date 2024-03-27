@@ -13,7 +13,7 @@ namespace CubeInCube.Backend.Contracts
         public double Z { get; set; }
         public double Length { get; set; }
         public double Width { get; set; }
-        public double Heigth { get; set; }
+        public double Height { get; set; }
         public double Theta { get; set; }
         public double Fi { get; set; }
     }

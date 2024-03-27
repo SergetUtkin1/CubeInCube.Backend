@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{C3CE9903-B407-4891-9DCB-E1DA7E94719A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.WebAPI", "CubeInCube.Backend.WebAPI\CubeInCube.Backend.WebAPI.csproj", "{E9B75FDB-0B83-4888-B58E-3FEFA32FCB36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeInCube.Backend.WebAPI", "CubeInCube.Backend.WebAPI\CubeInCube.Backend.WebAPI.csproj", "{E9B75FDB-0B83-4888-B58E-3FEFA32FCB36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Domain", "CubeInCube.Backend.Domain\CubeInCube.Backend.Domain.csproj", "{3BDD8BD1-0D4C-440B-ABF3-EED503A78403}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeInCube.Backend.Domain", "CubeInCube.Backend.Domain\CubeInCube.Backend.Domain.csproj", "{3BDD8BD1-0D4C-440B-ABF3-EED503A78403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Services.Abstractions", "CubeInCube.Backend.Services.Abstractions\CubeInCube.Backend.Services.Abstractions.csproj", "{C9C6A101-D31B-4356-A823-AF0F0CAAC3DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeInCube.Backend.Services.Abstractions", "CubeInCube.Backend.Services.Abstractions\CubeInCube.Backend.Services.Abstractions.csproj", "{C9C6A101-D31B-4356-A823-AF0F0CAAC3DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Services", "CubeInCube.Backend.Services\CubeInCube.Backend.Services.csproj", "{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeInCube.Backend.Services", "CubeInCube.Backend.Services\CubeInCube.Backend.Services.csproj", "{1F593FD8-F4F2-4ACC-B9B0-4CF134724B0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeInCube.Backend.Contracts", "CubeInCube.Backend.Contracts\CubeInCube.Backend.Contracts.csproj", "{789ED4A8-C95F-4AB2-9747-037715D3A6F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeInCube.Backend.Contracts", "CubeInCube.Backend.Contracts\CubeInCube.Backend.Contracts.csproj", "{789ED4A8-C95F-4AB2-9747-037715D3A6F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7E5BB3C-F18D-43B6-A78F-15B12377EC0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

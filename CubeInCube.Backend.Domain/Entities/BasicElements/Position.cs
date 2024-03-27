@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using System.Drawing;
 
 namespace CubeInCube.Backend.Domain.Entities.BasicElements
 {
@@ -20,6 +21,11 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
             X = coordinates[0];
             Y = coordinates[1];
             Z = coordinates[2];
+        }
+
+        public override string ToString()
+        {
+            return $"({Math.Round(X,2)}; {Math.Round(Y,2)}; {Math.Round(Z,2)};)";
         }
 
         public double GetDistance(Position other) =>
@@ -53,11 +59,13 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
             var vecAB = pointB - pointA;
             var vecAP = pointP - pointA;
 
-            // Проекция вектора AP на вектор AB
-            var projection = vecAP.DotProduct(vecAB) / vecAB.L2Norm() * vecAB;
+            var crossProduct = VectorCrossProduct(vecAB, vecAP);
 
-            // Расстояние - длина проекции
-            var distance = (vecAP - projection).L2Norm();
+            // Находим длину отрезка AB
+            var lengthAB = vecAB.L2Norm();
+
+            // Находим расстояние от точки P до линии AB
+            double distance = crossProduct.L2Norm() / lengthAB;
 
             return distance;
         }
@@ -65,36 +73,31 @@ namespace CubeInCube.Backend.Domain.Entities.BasicElements
 
         public Position ProjectPointOntoPlane(Plane plane)
         {
-            // Три точки, задающие плоскость
-            var pointA = Vector<double>.Build.DenseOfArray(new double[] { plane.Points[0].X, plane.Points[0].Y, plane.Points[0].Z });
-            var pointB = Vector<double>.Build.DenseOfArray(new double[] { plane.Points[1].X, plane.Points[1].Y, plane.Points[1].Z });
-            var pointC = Vector<double>.Build.DenseOfArray(new double[] { plane.Points[2].X, plane.Points[2].Y, plane.Points[2].Z });
+            var normalVector = plane.Normal.ToVector();
+            var point = this.ToVector();
+            // Находим расстояние от точки до плоскости
+            var distanceToPlane = GetDistance(plane);
 
-            // Точка, для которой мы хотим найти проекцию на плоскость
-            var pointP = Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
-
-            // Найдем векторы, образующие стороны плоскости
-            var vecAB = pointB - pointA;
-            var vecAC = pointC - pointA;
-
-            // Нормаль к плоскости - векторное произведение vecAB и vecAC
-            var normal = VectorCrossProduct(vecAB, vecAC);
-
-            // Вектор от точки на плоскости до заданной точки
-            var vecAP = pointP - pointA;
-
-            // Проекция вектора AP на нормаль к плоскости
-            var projection = (vecAP.DotProduct(normal) / normal.Norm(2)) * normal;
-
-            // Найдем точку проекции, добавив проекцию к любой из точек на плоскости
-            var projectedPoint = pointP - projection;
-
-            return new Position(projectedPoint);
+            // Вычисляем проекцию точки на плоскость
+            var projection = point - distanceToPlane * normalVector;
+            var result = new Position(projection);
+            Console.WriteLine($"Проекция точки {this} на плоскость {plane}: {result}");
+            return result;
         }
 
         private Vector<double> VectorCrossProduct(Vector<double> vector1, Vector<double> vector2)
         {
             var result = Vector<double>.Build.Dense(3);
+            result[0] = vector1[1] * vector2[2] - vector1[2] * vector2[1];
+            result[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
+            result[2] = vector1[0] * vector2[1] - vector1[1] * vector2[0];
+            return result;
+        }
+
+        public Vector<double> VectorCrossProduct(Vector<double> vector2)
+        {
+            var result = Vector<double>.Build.Dense(3);
+            var vector1 = this.ToVector();
             result[0] = vector1[1] * vector2[2] - vector1[2] * vector2[1];
             result[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
             result[2] = vector1[0] * vector2[1] - vector1[1] * vector2[0];

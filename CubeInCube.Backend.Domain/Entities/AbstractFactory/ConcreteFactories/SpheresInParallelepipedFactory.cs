@@ -11,11 +11,11 @@ namespace ShapesInShape.Models.AbstractFactory.ConcreteFactories
         public Parallelepiped BoundingShape { get; set; } = null!;
         
         public override void CreateBoundingShape(Dimension dimension) =>
-            BoundingShape = new Parallelepiped(new Position(), dimension.Length, dimension.Width, dimension.Heigth);
+            BoundingShape = new Parallelepiped(new Position(), dimension.Length, dimension.Width, dimension.Height);
 
         public override void CreateInnerShape(Position center, Dimension dimension)
         {
-            var sphere = new Sphere(center, dimension.Length, dimension.Width, dimension.Heigth);
+            var sphere = new Sphere(center, dimension.Length, dimension.Width, dimension.Height);
             InnerShapes[_currentIndex] = sphere;
         }
 
@@ -33,7 +33,7 @@ namespace ShapesInShape.Models.AbstractFactory.ConcreteFactories
                 spheres[i] = new Sphere(new Position(),
                                         dimensions[i].Length,
                                         dimensions[i].Width,
-                                        dimensions[i].Heigth);
+                                        dimensions[i].Height);
             }
 
             if (isSortingEnable)
@@ -51,7 +51,7 @@ namespace ShapesInShape.Models.AbstractFactory.ConcreteFactories
             {
                 x = distributionOfPosition.GetValue(BoundingShape.Center.X - 0.5 * BoundingShape.Dimension.Length, BoundingShape.Center.X + 0.5 * BoundingShape.Dimension.Length);
                 y = distributionOfPosition.GetValue(BoundingShape.Center.Y - 0.5 * BoundingShape.Dimension.Width, BoundingShape.Center.Y + 0.5 * BoundingShape.Dimension.Width);
-                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Heigth, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Heigth);
+                z = distributionOfPosition.GetValue(BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Height, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Height);
                 position = new Position(x, y, z);
             } while (!CheckPointInsideBounding(position));
 
@@ -63,7 +63,7 @@ namespace ShapesInShape.Models.AbstractFactory.ConcreteFactories
             var flag = false;
             var xPlanes = (BoundingShape.Center.X - 0.5 * BoundingShape.Dimension.Length, BoundingShape.Center.X + 0.5 * BoundingShape.Dimension.Length);
             var yPlanes = (BoundingShape.Center.Y - 0.5 * BoundingShape.Dimension.Width, BoundingShape.Center.Y + 0.5 * BoundingShape.Dimension.Width);
-            var zPlanes = (BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Heigth, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Heigth);
+            var zPlanes = (BoundingShape.Center.Z - 0.5 * BoundingShape.Dimension.Height, BoundingShape.Center.Z + 0.5 * BoundingShape.Dimension.Height);
 
             var xCondition = (xPlanes.Item1 < position.X && position.X < xPlanes.Item2);
             var yCondition = (yPlanes.Item1 < position.Y && position.Y < yPlanes.Item2);

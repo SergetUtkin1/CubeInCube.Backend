@@ -54,7 +54,7 @@ namespace CubeInCube.Backend.Services
             { 
                 var shapeDto = new ShapeLookUpDto()
                 {
-                    Heigth = shape.Dimension.Heigth,
+                    Height = shape.Dimension.Height,
                     Length = shape.Dimension.Length,
                     Width = shape.Dimension.Width,
                     Fi = shape.Dimension.Fi,

@@ -10,7 +10,7 @@ namespace CubeInCube.Backend.Domain.Entities.Models.AbstractFactory.Products.Sha
             Center = center;
             Dimension = new Dimension()
             {
-                Heigth = heigth,
+                Height = heigth,
                 Length = length,
                 Width = length,
                 Theta = theta,

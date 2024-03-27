@@ -25,7 +25,7 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.Shapes
         }
 
         protected override double GetVolume()
-            => Dimension.Length * Dimension.Width * Dimension.Heigth;
+            => Dimension.Length * Dimension.Width * Dimension.Height;
 
         private void SetSides()
         {
@@ -65,19 +65,19 @@ namespace CubeInCube.Backend.Domain.Entities.AbstractFactory.Products.Shapes
 
                         var x = Center.X + tempArray[0] * Dimension.Length * 0.5;
                         var y = Center.Y + tempArray[1] * Dimension.Width * 0.5;
-                        var z = Center.Z + tempArray[2] * Dimension.Heigth * 0.5;
+                        var z = Center.Z + tempArray[2] * Dimension.Height * 0.5;
 
                         PointsOfSides.Add(new Position(x, y, z));
 
                         x = Center.X + tempArray[1] * Dimension.Length * 0.5;
                         y = Center.Y + tempArray[0] * Dimension.Width * 0.5;
-                        z = Center.Z + tempArray[2] * Dimension.Heigth * 0.5;
+                        z = Center.Z + tempArray[2] * Dimension.Height * 0.5;
 
                         PointsOfSides.Add(new Position(x, y, z));
 
                         x = Center.X + tempArray[2] * Dimension.Length * 0.5;
                         y = Center.Y + tempArray[1] * Dimension.Width * 0.5;
-                        z = Center.Z + tempArray[0] * Dimension.Heigth * 0.5;
+                        z = Center.Z + tempArray[0] * Dimension.Height * 0.5;
 
                         PointsOfSides.Add(new Position(x, y, z));
 
